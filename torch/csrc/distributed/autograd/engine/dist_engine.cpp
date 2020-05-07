@@ -1,10 +1,10 @@
 #include <queue>
 
+#include <ATen/Parallel.h>
 #include <torch/csrc/autograd/functions/accumulate_grad.h>
 #include <torch/csrc/autograd/input_buffer.h>
 #include <torch/csrc/distributed/autograd/context/container.h>
 #include <torch/csrc/distributed/autograd/engine/dist_engine.h>
-#include <ATen/Parallel.h>
 
 namespace torch {
 namespace distributed {
@@ -40,6 +40,8 @@ class DistAccumulateGradCaptureHook
         autogradContext_(std::move(autogradContext)) {}
 
   at::Tensor operator()(const at::Tensor& grad) override {
+    ThreadLocalDistAutogradContext contextGuard(
+        ContextWeakPtr(autogradContext));
     variable_list inputGrads = {grad};
     // It's intended that pre/post hooks are still called even if the grad is
     // undenfined here.

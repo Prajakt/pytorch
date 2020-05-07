@@ -80,6 +80,7 @@ TESTS = [
     'test_determination',
     'distributed/rpc/jit/test_rpc_spawn',
     'distributed/rpc/faulty_agent/test_rpc_spawn',
+    'distributed/test_ddp_under_dist_autograd.py',
 ]
 
 WINDOWS_BLACKLIST = [
